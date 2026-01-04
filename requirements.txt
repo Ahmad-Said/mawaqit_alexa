@@ -1,0 +1,4 @@
+icalendar
+requests
+bs4
+typing-extensions
