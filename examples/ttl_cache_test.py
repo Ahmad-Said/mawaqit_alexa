@@ -1,15 +1,12 @@
-# --- Configuration ---
-import os
-
+from examples import ttl_cache_config
 from mawaqit_alexa.util.ttl_cache import persistent_ttl_cache
 
 WEEK_IN_SECONDS = 604800
 
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+ttl_cache_config.config_ex_cache()
 
 # --- Your Function ---
-@persistent_ttl_cache(seconds=WEEK_IN_SECONDS, logger_callback=print, cache_dir=project_root+"/data/cache")
+@persistent_ttl_cache(seconds=WEEK_IN_SECONDS, logger_callback=print)
 def get_masjid_config(masjid_url):
     # Simulate a slow database or network call
     # This print will only show up once per week!

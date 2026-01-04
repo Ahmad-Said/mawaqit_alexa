@@ -8,7 +8,7 @@ import re
 from mawaqit_alexa.data_provider.mawaqit_provider import MawaqitProvider
 from mawaqit_alexa.exceptions.scraping_exception import ScrapingException
 from mawaqit_alexa.models.types import MawaqitYearCalendar
-from mawaqit_alexa.util.ttl_cache import ttl_cache
+from mawaqit_alexa.util.ttl_cache import persistent_ttl_cache
 
 WEEK_IN_SECONDS = 604800
 
@@ -24,7 +24,7 @@ class ScrapingMawaqitProvider(MawaqitProvider):
             self.masjid_url = f"https://mawaqit.net/en/{self.masjid_endpoint}"
 
     @staticmethod
-    @ttl_cache(seconds=WEEK_IN_SECONDS, logger_callback=print)
+    @persistent_ttl_cache(seconds=WEEK_IN_SECONDS, logger_callback=print)
     def _fetch_mawaqit(masjid_url: str):
         r = requests.get(masjid_url)
         if r.status_code == 200:

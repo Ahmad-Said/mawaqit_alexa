@@ -1,5 +1,6 @@
 import datetime
 import os
+from typing import Literal
 
 from icalendar import Calendar, Event, Alarm
 
@@ -65,7 +66,7 @@ class MawaqitCalendarGenerator:
                                 year: int,
                                 output_file: str,
                                 time_zone: str = 'Europe/Paris',
-                                language: str = 'en',
+                                language: Literal['en', 'ar'] = 'en'
                                 ) -> Calendar:
         # Create a new iCal calendar
         cal = Calendar()

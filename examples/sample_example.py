@@ -1,5 +1,8 @@
 import datetime
 import os
+from typing import Literal
+
+from examples import ttl_cache_config
 
 from mawaqit_alexa.data_provider.scraping_mawaqit_provider import ScrapingMawaqitProvider
 from mawaqit_alexa.data_provider.csv_mawaqit_provider import CsvMawaqitProvider
@@ -12,7 +15,8 @@ if __name__ == '__main__':
     Param.ALARM_BEFORE_MINUTES = 15
     Param.SUMMARY_PREFIX = ''
     # language = 'ar'
-    language = 'en'
+    language: Literal['ar', 'en'] = 'en'
+    ttl_cache_config.config_ex_cache()
 
     ## set directly the url of the mawaqit online link
     data_url = 'https://mawaqit.net/fr/grande-mosquee-de-paris'
@@ -37,7 +41,7 @@ if __name__ == '__main__':
     else:
         raise MissingParamException('You must set either data_folder or data_url')
 
-    output_file = f'out/{mosque_name}_{language}_{Param.ALARM_BEFORE_MINUTES}_{current_year}.ics'
+    output_file = f'../data/out/{mosque_name}_{language}_{Param.ALARM_BEFORE_MINUTES}_{current_year}.ics'
     output_file = os.path.join(os.getcwd(), output_file)
 
     # create the calendar
@@ -48,6 +52,3 @@ if __name__ == '__main__':
         time_zone='Europe/Paris',
         language=language
     )
-
-
-
