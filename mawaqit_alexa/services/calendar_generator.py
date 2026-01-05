@@ -12,6 +12,7 @@ from mawaqit_alexa.util.util import Util
 class MawaqitCalendarGenerator:
     EN_PRAYER_NAMES = ['fajr', 'shuruk', 'dhuhr', 'asr', 'maghrib', 'isha']
     AR_PRAYER_NAMES = ['صلاة الفجر', 'الشروق', 'صلاة الظهر', 'صلاة العصر', 'صلاة المغرب', 'صلاة العشاء']
+    FR_PRAYER_NAMES = ['Fajr', 'Shuruk', 'Dhuhr', 'Asr', 'Maghrib', 'Isha']
 
     @staticmethod
     def get_single_prayer_event(en_prayer_name: str,
@@ -66,7 +67,7 @@ class MawaqitCalendarGenerator:
                                 year: int,
                                 output_file: str,
                                 time_zone: str = 'Europe/Paris',
-                                language: Literal['en', 'ar'] = 'en'
+                                language: Literal['en', 'ar', 'fr'] = 'en'
                                 ) -> Calendar:
         # Create a new iCal calendar
         cal = Calendar()
@@ -80,9 +81,18 @@ class MawaqitCalendarGenerator:
                 for prayer_nb, prayer_time in enumerate(prayer_times):
                     en_prayer_name = MawaqitCalendarGenerator.EN_PRAYER_NAMES[prayer_nb].capitalize()
                     ar_prayer_name = MawaqitCalendarGenerator.AR_PRAYER_NAMES[prayer_nb]
+                    fr_prayer_name = MawaqitCalendarGenerator.FR_PRAYER_NAMES[prayer_nb]
+
+                    if language.lower() == 'ar':
+                        desired_prayer_name = ar_prayer_name
+                    elif language.lower() == 'fr':
+                        desired_prayer_name = fr_prayer_name
+                    else:
+                        desired_prayer_name = en_prayer_name
+
                     event_params = {
                         'en_prayer_name': en_prayer_name,
-                        'desired_notification_prayer_name': ar_prayer_name if language.lower() == 'ar' else en_prayer_name,
+                        'desired_notification_prayer_name': desired_prayer_name,
                         'year': year,
                         'month': month_number,
                         'day': day,
