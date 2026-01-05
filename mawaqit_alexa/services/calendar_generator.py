@@ -4,7 +4,6 @@ from typing import Literal
 
 from icalendar import Calendar, Event, Alarm
 
-from mawaqit_alexa.util.param import Param
 from mawaqit_alexa.models.types import MawaqitYearCalendar
 from mawaqit_alexa.util.util import Util
 
@@ -24,7 +23,8 @@ class MawaqitCalendarGenerator:
                                 time_zone="Europe/Paris",
                                 suffix_id="",
                                 trigger_before_min=0,
-                                event_summary=""
+                                event_summary="",
+                                summary_prefix=""
                                 ):
         prayer_datetime = datetime.datetime(
             year,
@@ -37,7 +37,7 @@ class MawaqitCalendarGenerator:
         event = Event()
         # join summary prefix and prayer name with a space if summary prefix is not empty
         event_summary = event_summary if event_summary else desired_notification_prayer_name
-        event_summary = f'{Param.SUMMARY_PREFIX} {event_summary}' if Param.SUMMARY_PREFIX else event_summary
+        event_summary = f'{summary_prefix} {event_summary}' if summary_prefix else event_summary
         event.add('summary', event_summary)
         event.add('dtstart', prayer_datetime)
         event.add('dtend', prayer_datetime)
@@ -67,7 +67,9 @@ class MawaqitCalendarGenerator:
                                 year: int,
                                 output_file: str,
                                 time_zone: str = 'Europe/Paris',
-                                language: Literal['en', 'ar', 'fr'] = 'en'
+                                language: Literal['en', 'ar', 'fr'] = 'en',
+                                alarm_before_minutes: int = 15,
+                                summary_prefix: str = ''
                                 ) -> Calendar:
         # Create a new iCal calendar
         cal = Calendar()
@@ -98,12 +100,13 @@ class MawaqitCalendarGenerator:
                         'day': day,
                         'time': prayer_time,
                         'time_zone': time_zone,
-                        'event_summary': ''
+                        'event_summary': '',
+                        'summary_prefix': summary_prefix
                     }
-                    if Param.ALARM_BEFORE_MINUTES > 0:
+                    if alarm_before_minutes > 0:
                         event_before_time = MawaqitCalendarGenerator.get_single_prayer_event(**event_params,
                                                                                              suffix_id='before',
-                                                                                             trigger_before_min=Param.ALARM_BEFORE_MINUTES)
+                                                                                             trigger_before_min=alarm_before_minutes)
                         cal.add_component(event_before_time)
 
                     event_at_time = MawaqitCalendarGenerator.get_single_prayer_event(**event_params,

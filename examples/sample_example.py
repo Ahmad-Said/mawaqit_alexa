@@ -7,13 +7,12 @@ from examples import ttl_cache_config
 from mawaqit_alexa.data_provider.scraping_mawaqit_provider import ScrapingMawaqitProvider
 from mawaqit_alexa.data_provider.csv_mawaqit_provider import CsvMawaqitProvider
 from mawaqit_alexa.exceptions.missing_param_exception import MissingParamException
-from mawaqit_alexa.util.param import Param
 from mawaqit_alexa.services.calendar_generator import MawaqitCalendarGenerator
 
 if __name__ == '__main__':
     # set the parameters
-    Param.ALARM_BEFORE_MINUTES = 15
-    Param.SUMMARY_PREFIX = ''
+    alarm_before_minutes = 15
+    summary_prefix = ''
     # language = 'ar'
     language: Literal['ar', 'en'] = 'en'
     ttl_cache_config.config_ex_cache()
@@ -41,7 +40,7 @@ if __name__ == '__main__':
     else:
         raise MissingParamException('You must set either data_folder or data_url')
 
-    output_file = f'../data/out/{mosque_name}_{language}_{Param.ALARM_BEFORE_MINUTES}_{current_year}.ics'
+    output_file = f'../data/out/{mosque_name}_{language}_{alarm_before_minutes}_{current_year}.ics'
     output_file = os.path.join(os.getcwd(), output_file)
 
     # create the calendar
@@ -50,5 +49,7 @@ if __name__ == '__main__':
         year=current_year,
         output_file=output_file,
         time_zone='Europe/Paris',
-        language=language
+        language=language,
+        alarm_before_minutes=alarm_before_minutes,
+        summary_prefix=summary_prefix
     )
