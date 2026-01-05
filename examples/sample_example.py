@@ -7,6 +7,7 @@ from examples import ttl_cache_config
 from mawaqit_alexa.data_provider.scraping_mawaqit_provider import ScrapingMawaqitProvider
 from mawaqit_alexa.data_provider.csv_mawaqit_provider import CsvMawaqitProvider
 from mawaqit_alexa.exceptions.missing_param_exception import MissingParamException
+from mawaqit_alexa.models.types import PrayerType
 from mawaqit_alexa.services.calendar_generator import MawaqitCalendarGenerator
 
 if __name__ == '__main__':
@@ -51,5 +52,7 @@ if __name__ == '__main__':
         time_zone='Europe/Paris',
         language=language,
         alarm_before_minutes=alarm_before_minutes,
-        summary_prefix=summary_prefix
+        summary_prefix=summary_prefix,
+        months_filter={1,3},
+        prayers_filter={PrayerType.ISHA}
     )

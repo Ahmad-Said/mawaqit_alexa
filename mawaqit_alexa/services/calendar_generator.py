@@ -1,10 +1,10 @@
 import datetime
 import os
-from typing import Literal
+from typing import Literal, Optional, Set
 
 from icalendar import Calendar, Event, Alarm
 
-from mawaqit_alexa.models.types import MawaqitYearCalendar
+from mawaqit_alexa.models.types import MawaqitYearCalendar, PrayerType
 from mawaqit_alexa.util.util import Util
 
 
@@ -69,12 +69,17 @@ class MawaqitCalendarGenerator:
                                 time_zone: str = 'Europe/Paris',
                                 language: Literal['en', 'ar', 'fr'] = 'en',
                                 alarm_before_minutes: int = 15,
-                                summary_prefix: str = ''
+                                summary_prefix: str = '',
+                                months_filter: Optional[Set[int]] = None,
+                                prayers_filter: Optional[Set[PrayerType]] = None
                                 ) -> Calendar:
         # Create a new iCal calendar
         cal = Calendar()
         for month_idx, month in enumerate(year_calendar):
             month_number = month_idx + 1
+            # Filter by months if specified
+            if months_filter is not None and month_number not in months_filter:
+                continue
             for day, prayer_times in month.items():
                 # skip leap days
                 day = int(day)
@@ -82,6 +87,9 @@ class MawaqitCalendarGenerator:
                     continue
                 for prayer_nb, prayer_time in enumerate(prayer_times):
                     en_prayer_name = MawaqitCalendarGenerator.EN_PRAYER_NAMES[prayer_nb].capitalize()
+                    # Filter by prayers if specified
+                    if prayers_filter is not None and PrayerType(en_prayer_name.lower()) not in prayers_filter:
+                        continue
                     ar_prayer_name = MawaqitCalendarGenerator.AR_PRAYER_NAMES[prayer_nb]
                     fr_prayer_name = MawaqitCalendarGenerator.FR_PRAYER_NAMES[prayer_nb]
 
